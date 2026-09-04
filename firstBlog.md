@@ -1,11 +1,9 @@
 # 第一周作业
 
-```markdown
 | 这个作业属于哪个课程 | [软件工程](https://edu.cnblogs.com/campus/gdgy/Class78-Grade2024-CS/) |
-| -------------------- | ---------------------------------- |
-| 这个作业要求在哪里   | [https://edu.cnblogs.com/campus/gdgy/Class78-Grade2024-CS/homework/15710] |
-| 这个作业的目标       | 熟悉博客与GitHub工具、反思自身现状、制定学习计划、阅读并提出问题 |
-```
+| :--- | :--- |
+| 这个作业要求在哪里 | [作业要求链接](https://edu.cnblogs.com/campus/gdgy/Class78-Grade2024-CS/homework/15710) |
+| 这个作业的目标 | 熟悉博客与GitHub工具、反思自身现状、制定学习计划、阅读并提出问题 |
 
 ## 一、介绍自己
 
