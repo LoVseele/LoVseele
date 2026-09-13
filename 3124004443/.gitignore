@@ -10,7 +10,6 @@
 !requirements.txt
 !.pylintrc
 !.coveragerc
-!PSP.md
 !BLOG.md
 !README.md
 !profile_run.py

@@ -1,40 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="488" font-family="Segoe UI, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#ffffff"/>
-<text x="20" y="24" font-size="16" font-weight="700" fill="#1f2d3d">性能分析：各函数累计耗时 (秒)</text>
-<text x="20" y="76" font-size="12" fill="#1f2d3d">1. run_benchmark  [C:\Users\MR\WorkBuddy\20</text>
+<text x="20" y="24" font-size="16" font-weight="700" fill="#1f2d3d">性能分析：各函数累计耗时（秒）</text>
+<text x="20" y="76" font-size="12" fill="#1f2d3d">1. run_benchmark  [profile_run.py]</text>
 <rect x="20" y="80" width="540" height="10" rx="3" fill="#e8543f"/>
-<text x="566" y="90" font-size="11" fill="#555">0.053s · 5 calls</text>
-<text x="20" y="110" font-size="12" fill="#1f2d3d">2. compute  [C:\Users\MR\WorkBuddy\2026-09-</text>
-<rect x="20" y="114" width="536" height="10" rx="3" fill="#2f6fed"/>
-<text x="562" y="124" font-size="11" fill="#555">0.053s · 5 calls</text>
-<text x="20" y="144" font-size="12" fill="#1f2d3d">3. normalize  [C:\Users\MR\WorkBuddy\2026-0</text>
-<rect x="20" y="148" width="292" height="10" rx="3" fill="#2f6fed"/>
-<text x="318" y="158" font-size="11" fill="#555">0.029s · 10 calls</text>
-<text x="20" y="178" font-size="12" fill="#1f2d3d">4. <built-in method unicodedata.normalize> </text>
-<rect x="20" y="182" width="246" height="10" rx="3" fill="#2f6fed"/>
-<text x="272" y="192" font-size="11" fill="#555">0.024s · 10 calls</text>
-<text x="20" y="212" font-size="12" fill="#1f2d3d">5. char_ngrams  [C:\Users\MR\WorkBuddy\2026</text>
-<rect x="20" y="216" width="138" height="10" rx="3" fill="#2f6fed"/>
-<text x="164" y="226" font-size="11" fill="#555">0.014s · 10 calls</text>
-<text x="20" y="246" font-size="12" fill="#1f2d3d">6. build_vector  [C:\Users\MR\WorkBuddy\202</text>
-<rect x="20" y="250" width="89" height="10" rx="3" fill="#2f6fed"/>
-<text x="115" y="260" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="280" font-size="12" fill="#1f2d3d">7. __init__  [C:\Users\MR\.workbuddy\binari</text>
-<rect x="20" y="284" width="89" height="10" rx="3" fill="#2f6fed"/>
-<text x="115" y="294" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="314" font-size="12" fill="#1f2d3d">8. update  [C:\Users\MR\.workbuddy\binaries</text>
-<rect x="20" y="318" width="88" height="10" rx="3" fill="#2f6fed"/>
-<text x="114" y="328" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="348" font-size="12" fill="#1f2d3d">9. <built-in method _collections._count_ele</text>
-<rect x="20" y="352" width="87" height="10" rx="3" fill="#2f6fed"/>
-<text x="113" y="362" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="382" font-size="12" fill="#1f2d3d">10. sub  [C:\Users\MR\.workbuddy\binaries\py</text>
-<rect x="20" y="386" width="27" height="10" rx="3" fill="#2f6fed"/>
-<text x="53" y="396" font-size="11" fill="#555">0.003s · 10 calls</text>
-<text x="20" y="416" font-size="12" fill="#1f2d3d">11. <method 'sub' of 're.Pattern' objects>  </text>
-<rect x="20" y="420" width="21" height="10" rx="3" fill="#2f6fed"/>
-<text x="47" y="430" font-size="11" fill="#555">0.002s · 10 calls</text>
-<text x="20" y="450" font-size="12" fill="#1f2d3d">12. <method 'lower' of 'str' objects>  [~]</text>
-<rect x="20" y="454" width="17" height="10" rx="3" fill="#2f6fed"/>
-<text x="43" y="464" font-size="11" fill="#555">0.002s · 10 calls</text>
+<text x="566" y="90" font-size="11" fill="#555">0.049s · 5 calls</text>
+<text x="20" y="110" font-size="12" fill="#1f2d3d">2. compute  [similarity.py]</text>
+<rect x="20" y="114" width="538" height="10" rx="3" fill="#2f6fed"/>
+<text x="564" y="124" font-size="11" fill="#555">0.049s · 5 calls</text>
+<text x="20" y="144" font-size="12" fill="#1f2d3d">3. normalize  [text_utils.py]</text>
+<rect x="20" y="148" width="280" height="10" rx="3" fill="#2f6fed"/>
+<text x="306" y="158" font-size="11" fill="#555">0.025s · 10 calls</text>
+<text x="20" y="178" font-size="12" fill="#1f2d3d">4. &lt;built-in method unicodedata.normalize&gt;  [~]</text>
+<rect x="20" y="182" width="234" height="10" rx="3" fill="#2f6fed"/>
+<text x="260" y="192" font-size="11" fill="#555">0.021s · 10 calls</text>
+<text x="20" y="212" font-size="12" fill="#1f2d3d">5. char_ngrams  [similarity.py]</text>
+<rect x="20" y="216" width="144" height="10" rx="3" fill="#2f6fed"/>
+<text x="170" y="226" font-size="11" fill="#555">0.013s · 10 calls</text>
+<text x="20" y="246" font-size="12" fill="#1f2d3d">6. build_vector  [similarity.py]</text>
+<rect x="20" y="250" width="97" height="10" rx="3" fill="#2f6fed"/>
+<text x="123" y="260" font-size="11" fill="#555">0.009s · 10 calls</text>
+<text x="20" y="280" font-size="12" fill="#1f2d3d">7. __init__  [__init__.py]</text>
+<rect x="20" y="284" width="97" height="10" rx="3" fill="#2f6fed"/>
+<text x="123" y="294" font-size="11" fill="#555">0.009s · 10 calls</text>
+<text x="20" y="314" font-size="12" fill="#1f2d3d">8. update  [__init__.py]</text>
+<rect x="20" y="318" width="96" height="10" rx="3" fill="#2f6fed"/>
+<text x="122" y="328" font-size="11" fill="#555">0.009s · 10 calls</text>
+<text x="20" y="348" font-size="12" fill="#1f2d3d">9. &lt;built-in method _collections._count_elements&gt;  [~]</text>
+<rect x="20" y="352" width="94" height="10" rx="3" fill="#2f6fed"/>
+<text x="120" y="362" font-size="11" fill="#555">0.009s · 10 calls</text>
+<text x="20" y="382" font-size="12" fill="#1f2d3d">10. sub  [__init__.py]</text>
+<rect x="20" y="386" width="30" height="10" rx="3" fill="#2f6fed"/>
+<text x="56" y="396" font-size="11" fill="#555">0.003s · 10 calls</text>
+<text x="20" y="416" font-size="12" fill="#1f2d3d">11. &lt;method 'sub' of 're.Pattern' objects&gt;  [~]</text>
+<rect x="20" y="420" width="23" height="10" rx="3" fill="#2f6fed"/>
+<text x="49" y="430" font-size="11" fill="#555">0.002s · 10 calls</text>
+<text x="20" y="450" font-size="12" fill="#1f2d3d">12. &lt;method 'lower' of 'str' objects&gt;  [~]</text>
+<rect x="20" y="454" width="14" height="10" rx="3" fill="#2f6fed"/>
+<text x="40" y="464" font-size="11" fill="#555">0.001s · 10 calls</text>
 </svg>
