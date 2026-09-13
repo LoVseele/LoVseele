@@ -1,40 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="488" font-family="Segoe UI, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#ffffff"/>
 <text x="20" y="24" font-size="16" font-weight="700" fill="#1f2d3d">性能分析：各函数累计耗时（秒）</text>
-<text x="20" y="76" font-size="12" fill="#1f2d3d">1. run_benchmark  [profile_run.py]</text>
+<text x="20" y="76" font-size="12" fill="#1f2d3d">1. run_pipeline  [profile_run.py]</text>
 <rect x="20" y="80" width="540" height="10" rx="3" fill="#e8543f"/>
-<text x="566" y="90" font-size="11" fill="#555">0.049s · 5 calls</text>
+<text x="566" y="90" font-size="11" fill="#555">0.077s · 5 calls</text>
 <text x="20" y="110" font-size="12" fill="#1f2d3d">2. compute  [similarity.py]</text>
 <rect x="20" y="114" width="538" height="10" rx="3" fill="#2f6fed"/>
-<text x="564" y="124" font-size="11" fill="#555">0.049s · 5 calls</text>
-<text x="20" y="144" font-size="12" fill="#1f2d3d">3. normalize  [text_utils.py]</text>
-<rect x="20" y="148" width="280" height="10" rx="3" fill="#2f6fed"/>
-<text x="306" y="158" font-size="11" fill="#555">0.025s · 10 calls</text>
-<text x="20" y="178" font-size="12" fill="#1f2d3d">4. &lt;built-in method unicodedata.normalize&gt;  [~]</text>
-<rect x="20" y="182" width="234" height="10" rx="3" fill="#2f6fed"/>
-<text x="260" y="192" font-size="11" fill="#555">0.021s · 10 calls</text>
-<text x="20" y="212" font-size="12" fill="#1f2d3d">5. char_ngrams  [similarity.py]</text>
-<rect x="20" y="216" width="144" height="10" rx="3" fill="#2f6fed"/>
-<text x="170" y="226" font-size="11" fill="#555">0.013s · 10 calls</text>
-<text x="20" y="246" font-size="12" fill="#1f2d3d">6. build_vector  [similarity.py]</text>
-<rect x="20" y="250" width="97" height="10" rx="3" fill="#2f6fed"/>
-<text x="123" y="260" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="280" font-size="12" fill="#1f2d3d">7. __init__  [__init__.py]</text>
-<rect x="20" y="284" width="97" height="10" rx="3" fill="#2f6fed"/>
-<text x="123" y="294" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="314" font-size="12" fill="#1f2d3d">8. update  [__init__.py]</text>
-<rect x="20" y="318" width="96" height="10" rx="3" fill="#2f6fed"/>
-<text x="122" y="328" font-size="11" fill="#555">0.009s · 10 calls</text>
-<text x="20" y="348" font-size="12" fill="#1f2d3d">9. &lt;built-in method _collections._count_elements&gt;  [~]</text>
-<rect x="20" y="352" width="94" height="10" rx="3" fill="#2f6fed"/>
-<text x="120" y="362" font-size="11" fill="#555">0.009s · 10 calls</text>
+<text x="564" y="124" font-size="11" fill="#555">0.077s · 5 calls</text>
+<text x="20" y="144" font-size="12" fill="#1f2d3d">3. build_vector  [similarity.py]</text>
+<rect x="20" y="148" width="352" height="10" rx="3" fill="#2f6fed"/>
+<text x="378" y="158" font-size="11" fill="#555">0.050s · 10 calls</text>
+<text x="20" y="178" font-size="12" fill="#1f2d3d">4. __init__  [__init__.py]</text>
+<rect x="20" y="182" width="352" height="10" rx="3" fill="#2f6fed"/>
+<text x="378" y="192" font-size="11" fill="#555">0.050s · 10 calls</text>
+<text x="20" y="212" font-size="12" fill="#1f2d3d">5. update  [__init__.py]</text>
+<rect x="20" y="216" width="352" height="10" rx="3" fill="#2f6fed"/>
+<text x="378" y="226" font-size="11" fill="#555">0.050s · 10 calls</text>
+<text x="20" y="246" font-size="12" fill="#1f2d3d">6. &lt;built-in method _collections._count_elements&gt;  [bui</text>
+<rect x="20" y="250" width="351" height="10" rx="3" fill="#2f6fed"/>
+<text x="377" y="260" font-size="11" fill="#555">0.050s · 10 calls</text>
+<text x="20" y="280" font-size="12" fill="#1f2d3d">7. normalize  [text_utils.py]</text>
+<rect x="20" y="284" width="183" height="10" rx="3" fill="#2f6fed"/>
+<text x="209" y="294" font-size="11" fill="#555">0.026s · 10 calls</text>
+<text x="20" y="314" font-size="12" fill="#1f2d3d">8. char_ngrams  [similarity.py]</text>
+<rect x="20" y="318" width="164" height="10" rx="3" fill="#2f6fed"/>
+<text x="190" y="328" font-size="11" fill="#555">0.023s · 190000 calls</text>
+<text x="20" y="348" font-size="12" fill="#1f2d3d">9. &lt;built-in method unicodedata.normalize&gt;  [built-in]</text>
+<rect x="20" y="352" width="157" height="10" rx="3" fill="#2f6fed"/>
+<text x="183" y="362" font-size="11" fill="#555">0.022s · 10 calls</text>
 <text x="20" y="382" font-size="12" fill="#1f2d3d">10. sub  [__init__.py]</text>
-<rect x="20" y="386" width="30" height="10" rx="3" fill="#2f6fed"/>
-<text x="56" y="396" font-size="11" fill="#555">0.003s · 10 calls</text>
-<text x="20" y="416" font-size="12" fill="#1f2d3d">11. &lt;method 'sub' of 're.Pattern' objects&gt;  [~]</text>
-<rect x="20" y="420" width="23" height="10" rx="3" fill="#2f6fed"/>
-<text x="49" y="430" font-size="11" fill="#555">0.002s · 10 calls</text>
-<text x="20" y="450" font-size="12" fill="#1f2d3d">12. &lt;method 'lower' of 'str' objects&gt;  [~]</text>
-<rect x="20" y="454" width="14" height="10" rx="3" fill="#2f6fed"/>
-<text x="40" y="464" font-size="11" fill="#555">0.001s · 10 calls</text>
+<rect x="20" y="386" width="17" height="10" rx="3" fill="#2f6fed"/>
+<text x="43" y="396" font-size="11" fill="#555">0.002s · 10 calls</text>
+<text x="20" y="416" font-size="12" fill="#1f2d3d">11. &lt;method 'sub' of 're.Pattern' objects&gt;  [built-in]</text>
+<rect x="20" y="420" width="16" height="10" rx="3" fill="#2f6fed"/>
+<text x="42" y="430" font-size="11" fill="#555">0.002s · 10 calls</text>
+<text x="20" y="450" font-size="12" fill="#1f2d3d">12. &lt;method 'lower' of 'str' objects&gt;  [built-in]</text>
+<rect x="20" y="454" width="7" height="10" rx="3" fill="#2f6fed"/>
+<text x="33" y="464" font-size="11" fill="#555">0.001s · 10 calls</text>
 </svg>

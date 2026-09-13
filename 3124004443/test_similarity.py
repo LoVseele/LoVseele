@@ -1,15 +1,18 @@
+"""单元测试：覆盖正常场景、边界值、算法单元与命令行（CLI）异常分支。"""
+
+# 测试函数以函数名自述用途，不再逐个编写 docstring
+# pylint: disable=missing-function-docstring
+
 import os
+import subprocess
+import sys
 import tempfile
 
-from similarity import (
-    TextSimilarity,
-    char_ngrams,
-    build_vector,
-    cosine_similarity,
-    naive_cosine_similarity,
-    simhash_similarity,
-)
 from main import main
+from similarity import (build_vector, char_ngrams, cosine_similarity,
+                        naive_cosine_similarity, simhash_similarity,
+                        TextSimilarity)
+from text_utils import normalize, read_text_file
 
 ORIGINAL = "今天是星期天，天气晴，今天晚上我要去看电影。"
 PLAGIARIZED = "今天是周天，天气晴朗，我晚上要去看电影。"
@@ -30,12 +33,12 @@ def test_completely_different():
 def test_example_pair_range():
     sim = TextSimilarity()
     score = sim.compute(ORIGINAL, PLAGIARIZED)
-    assert 0.5 < score < 0.97
+    assert 0.5 < score < 0.97          # 示例对属于"大面积改写"，重复率应中等偏高
 
 
 def test_empty_original():
     sim = TextSimilarity()
-    assert sim.compute("", "今天是周天") == 0.0
+    assert sim.compute("", "今天是周天") == 0.0     # 空向量触发除零保护
 
 
 def test_empty_plagiarism():
@@ -47,7 +50,7 @@ def test_whitespace_ignored():
     sim = TextSimilarity()
     a = "今天 是 星期天 天气 晴"
     b = "今天是星期天天气晴"
-    assert abs(sim.compute(a, b) - 1.0) < 1e-6
+    assert abs(sim.compute(a, b) - 1.0) < 1e-6      # 空白差异应被归一化消除
 
 
 def test_punctuation_variation():
@@ -59,7 +62,7 @@ def test_punctuation_variation():
 def test_single_char_added():
     sim = TextSimilarity()
     score = sim.compute("我爱北京天安门", "我爱北京天安门城楼")
-    assert score > 0.8
+    assert score > 0.8                              # 少量增字不应大幅拉低相似度
 
 
 def test_substring_plagiarism():
@@ -72,19 +75,19 @@ def test_substring_plagiarism():
 def test_reversed_text_lower():
     sim = TextSimilarity()
     score = sim.compute("软件工程很有趣", "趣有很程工件事")
-    assert score < 0.6
+    assert score < 0.6                              # 语序被打乱，相似度应明显下降
 
 
 def test_fullwidth_normalization():
     sim = TextSimilarity()
     score = sim.compute("ＡＢＣ１２３", "abc123")
-    assert score > 0.9
+    assert score > 0.9                              # 全角应被 NFKC 统一为半角
 
 
 def test_char_ngrams_basic():
-    assert char_ngrams("abc", 2) == ["ab", "bc"]
-    assert char_ngrams("a", 2) == ["a"]
-    assert char_ngrams("", 2) == []
+    assert list(char_ngrams("abc", 2)) == ["ab", "bc"]
+    assert list(char_ngrams("a", 2)) == ["a"]       # 短于 n 时整体作为一个 gram
+    assert len(list(char_ngrams("", 2))) == 0
 
 
 def test_build_vector():
@@ -121,9 +124,8 @@ def test_simhash_discriminates():
 
 def test_n_parameter_consistency():
     a = "软件工程是一门研究用工程化方法构建和维护软件的学科"
-    b = "软件工程是一门研究用工程化方法构建和维护软件的学科"
     for n in (1, 2, 3):
-        assert abs(TextSimilarity(n=n).compute(a, b) - 1.0) < 1e-9
+        assert abs(TextSimilarity(n=n).compute(a, a) - 1.0) < 1e-9
 
 
 def test_main_cli_writes_answer():
@@ -148,9 +150,9 @@ def test_main_missing_file_no_crash():
         ap = os.path.join(tmp, "ans.txt")
         with open(pp, "w", encoding="utf-8") as f:
             f.write("hello")
-        assert main([op, pp, ap]) == 0  # 不异常退出
+        assert main([op, pp, ap]) == 0              # 缺失文件也不异常退出
         with open(ap, "r", encoding="utf-8") as f:
-            assert f.read().strip() == "0.00"
+            assert f.read().strip() == "0.00"       # 兜底写出 0.00
 
 
 def test_main_bad_argc():
@@ -159,3 +161,61 @@ def test_main_bad_argc():
 
 def test_main_wrong_arg_count_too_many():
     assert main(["a", "b", "c", "d"]) == 1
+
+
+def test_normalize_none_returns_empty():
+    assert normalize(None) == ""                    # 传入 None 时不应抛异常
+
+
+def test_read_text_file_gbk():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "gbk.txt")
+        with open(path, "wb") as f:
+            f.write("今天是星期天".encode("gbk"))
+        assert read_text_file(path) == "今天是星期天"   # 非 UTF-8 也能正确解码
+
+
+def test_read_text_file_fallback_ignores_bad_bytes():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "broken.txt")
+        with open(path, "wb") as f:
+            f.write(b"\xff\x81abc")                 # 四种编码均无法解码
+        assert read_text_file(path) == "abc"        # 兜底忽略坏字节而非崩溃
+
+
+def test_naive_cosine_empty():
+    assert naive_cosine_similarity(build_vector([]), build_vector([])) == 0.0
+
+
+def test_simhash_method_via_compute():
+    sim = TextSimilarity(method="simhash")
+    assert abs(sim.compute(ORIGINAL, ORIGINAL) - 1.0) < 1e-9
+
+
+def test_main_module_runs_as_script():
+    project = os.path.dirname(os.path.abspath(__file__))
+    with tempfile.TemporaryDirectory() as tmp:
+        op = os.path.join(tmp, "orig.txt")
+        pp = os.path.join(tmp, "plag.txt")
+        ap = os.path.join(tmp, "ans.txt")
+        with open(op, "w", encoding="utf-8") as f:
+            f.write(ORIGINAL)
+        with open(pp, "w", encoding="utf-8") as f:
+            f.write(PLAGIARIZED)
+        result = subprocess.run([sys.executable, "main.py", op, pp, ap],
+                                cwd=project, capture_output=True, check=False)
+        assert result.returncode == 0               # 入口脚本真实可运行且正常退出
+        with open(ap, "r", encoding="utf-8") as f:
+            assert 0.0 <= float(f.read().strip()) <= 100.0
+
+
+def test_main_unwritable_answer_path_no_crash():
+    with tempfile.TemporaryDirectory() as tmp:
+        op = os.path.join(tmp, "orig.txt")
+        pp = os.path.join(tmp, "plag.txt")
+        bad_answer = os.path.join(tmp, "missing_dir", "ans.txt")   # 目标目录不存在
+        with open(op, "w", encoding="utf-8") as f:
+            f.write(ORIGINAL)
+        with open(pp, "w", encoding="utf-8") as f:
+            f.write(PLAGIARIZED)
+        assert main([op, pp, bad_answer]) == 0      # 连答案都写不出也不异常退出
