@@ -1,0 +1,8 @@
+[run]
+omit =
+    profile_run.py
+    make_chart.py
+    test_similarity.py
+
+[report]
+show_missing = True

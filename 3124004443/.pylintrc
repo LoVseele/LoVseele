@@ -1,0 +1,13 @@
+[MASTER]
+# 仅关闭与本次小项目无关的"噪声"规则，其余规则均保持开启并清零
+disable=
+    too-few-public-methods,
+    missing-module-docstring,
+    fixme,
+    broad-exception-caught
+
+[FORMAT]
+max-line-length=100
+
+[MESSAGES CONTROL]
+# 允许在测试文件中出现未使用的导入（测试辅助）

@@ -1,0 +1,20 @@
+# 白名单：仅下列文件会被 Git 跟踪，其余一律忽略。
+# 如需新增必须上传的文件，在此追加对应的 ! 行即可。
+
+*
+!.gitignore
+!main.py
+!similarity.py
+!text_utils.py
+!test_similarity.py
+!requirements.txt
+!.pylintrc
+!.coveragerc
+!PSP.md
+!BLOG.md
+!README.md
+!profile_run.py
+!make_chart.py
+!profile_chart.svg
+!sample/
+!sample/*
