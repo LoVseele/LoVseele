@@ -1,6 +1,7 @@
-"""开发用性能脚本：微观对比两种余弦实现，并用 cProfile 剖析完整查重流程。"""
+"""开发用性能脚本：在真实测试文本上做端到端基准，并用 cProfile 剖析查重流程。"""
 
 import cProfile
+import os
 import pstats
 import random
 import time
@@ -8,7 +9,11 @@ from io import StringIO
 
 from similarity import (build_vector, char_ngrams, cosine_similarity,
                         naive_cosine_similarity, TextSimilarity)
-from text_utils import normalize
+from text_utils import normalize, read_text_file
+
+SAMPLE_DIR = "sample"
+ORIGIN_PATH = os.path.join(SAMPLE_DIR, "orig.txt")
+PLAGIARISM_PATH = os.path.join(SAMPLE_DIR, "orig_0.8_dis_15.txt")
 
 BASE = ("软件工程是一门研究用工程化方法构建和维护软件的学科，"
         "它涉及程序设计语言、数据库、软件开发工具、系统平台、"
@@ -25,6 +30,27 @@ def random_text(size, seed=2024):
     """生成高熵随机文本：字符几乎互不重复，使公共键数量接近上界，便于压测最坏情况。"""
     generator = random.Random(seed)
     return "".join(generator.choice(CHAR_POOL) for _ in range(size))
+
+
+def load_real_pair():
+    """读取 sample/ 下的真实测试文本；两者缺失时退回合成的低熵文本。"""
+    if os.path.isfile(ORIGIN_PATH) and os.path.isfile(PLAGIARISM_PATH):
+        return read_text_file(ORIGIN_PATH), read_text_file(PLAGIARISM_PATH)
+    return repeat_text(20000), repeat_text(20000)[:15000] + "追加的句子。" * 200
+
+
+def real_benchmark(rounds=5):
+    """在真实测试文本上测量「读取文件 + 查重」的端到端单次耗时。"""
+    original, plagiarized = load_real_pair()
+    detector = TextSimilarity(n=2, method="cosine")
+    start = time.perf_counter()
+    for _ in range(rounds):
+        original, plagiarized = load_real_pair()
+        similarity = detector.compute(original, plagiarized)
+    elapsed = (time.perf_counter() - start) / rounds
+    print(f"[真实文本] 原文 {len(original)} 字 vs 改写版 {len(plagiarized)} 字"
+          f"，相似度 {similarity * 100:.2f}%")
+    print(f"  读取 + 查重 单次耗时: {elapsed * 1000:.1f} ms（共 {rounds} 次平均）")
 
 
 def micro_benchmark(sizes=(300, 600), rounds=30):
@@ -48,19 +74,15 @@ def micro_benchmark(sizes=(300, 600), rounds=30):
               f"朴素 {naive * 1000:.4f} ms | 提速 {naive / efficient:.0f}x")
 
 
-def run_pipeline(size=20000):
-    """跑一次完整查重：原文 vs（截断后追加内容的）抄袭版。"""
-    original = repeat_text(size)
-    plagiarized = original[:int(size * 0.75)] + "这是后来被修改追加的内容句子。" * 200
-    return TextSimilarity(n=2, method="cosine").compute(original, plagiarized)
-
-
 def profile_pipeline(rounds=5):
-    """用 cProfile 采样完整流程，输出 profile_results.txt 与 profile_stats.prof。"""
+    """在真实文本上对查重流程做 cProfile 采样，输出结果文件与统计数据。"""
+    original, plagiarized = load_real_pair()
+    detector = TextSimilarity(n=2, method="cosine")
+
     profiler = cProfile.Profile()
     profiler.enable()
     for _ in range(rounds):
-        run_pipeline()
+        detector.compute(original, plagiarized)
     profiler.disable()
 
     stream = StringIO()
@@ -74,7 +96,8 @@ def profile_pipeline(rounds=5):
 
 
 def main():
-    """先跑微基准对比，再对完整流程做 cProfile 采样。"""
+    """依次执行：真实文本端到端基准、两种余弦的微基准、查重流程的 cProfile 剖析。"""
+    real_benchmark()
     micro_benchmark()
     profile_pipeline()
 

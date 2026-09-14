@@ -83,20 +83,20 @@ flowchart TD
 
 ## 三、性能改进
 
-用 cProfile 对核心算法做剖析，并针对最耗时处优化。
+用 cProfile 对查重流程做剖析，并针对最耗时处优化。
 
-**改进点**：把双重循环余弦换成交集余弦。两者结果完全一致（单测 `test_naive_equals_efficient` 验证），但在去重 gram 数较大时后者快得多。微基准（高熵文本，各测 30 次）：
+**改进点**：把双重循环余弦换成交集余弦。两者结果完全一致（单测 `test_naive_equals_efficient` 验证），但后者在公共键较少时快得多。微基准（高熵文本，各测 30 次）：
 
-| 文本规模 | 交集余弦（ms/次） | 朴素双循环（ms/次） |
-| --- | --- | --- |
-| 300 字符 | 0.0256 | 2.1668 |
-| 600 字符 | 0.0588 | 8.4239 |
+| 文本规模 | 交集余弦（ms/次） | 朴素双循环（ms/次） | 提速 |
+| --- | --- | --- | --- |
+| 300 字符 | 0.0256 | 2.0456 | 80× |
+| 600 字符 | 0.0484 | 8.4067 | 174× |
 
-规模翻倍时，朴素版耗时涨约 **3.9 倍**（≈ O(n²)），交集版涨约 **2.3 倍**（≈ O(n)）。
+规模翻倍时，朴素版耗时涨约 **4.1 倍**（≈ O(n²)），交集版涨约 **1.9 倍**（≈ O(n)）；规模越大，两者差距拉开得越明显。
 
-**完整流程耗时**：20000 字符文本跑 5 次共 0.077 s，单次约 15 ms，远低于 5 s 上限。
+**真实文本耗时**：`sample/orig.txt`（10511 字）对比 `sample/orig_0.8_dis_15.txt`（10512 字），5 次平均「读取文件 + 查重」为 **6.9 ms**，远低于 5 s 上限。
 
-**消耗最大的函数**（按 `tottime`）：`_collections._count_elements`（0.027 s，统计词频）> `char_ngrams`（0.023 s，切 gram）> `unicodedata.normalize`（0.022 s，NFKC 归一化）。而求相似度的 `cosine_similarity` 与 `_cosine` 累计耗时几乎为 0——瓶颈全在预处理，且均为 O(n)。
+**消耗最大的函数**（按 `tottime`，5 次采样合计）：`_collections._count_elements`（12.7 ms，统计词频）> `char_ngrams`（10.4 ms，切 2-gram）> `unicodedata.normalize`（9.4 ms，NFKC 归一化）> `builtins.sum`（5.6 ms）。而求相似度的 `cosine_similarity` 仅 1.2 ms——瓶颈全在预处理，并且都是 O(n)。
 
 **性能分析图**：
 
@@ -175,9 +175,21 @@ def test_main_missing_file_no_crash():
 核心程序仅依赖标准库，可直接运行：
 
 ```bash
-# 计算重复率（示例：62.19）
-python main.py "sample/orig.txt" "sample/orig_add.txt" "sample/ans.txt"
+# 用法：python main.py <原文> <抄袭版> <答案文件>
+python main.py "sample/orig.txt" "sample/orig_0.8_dis_15.txt" "sample/ans.txt"
 ```
+
+在 `sample/` 测试集上的运行结果（答案文件为 `sample/ans_*.txt`）：
+
+| 抄袭版 | 重复率 |
+| --- | --- |
+| orig_0.8_add.txt | 94.17% |
+| orig_0.8_del.txt | 94.12% |
+| orig_0.8_dis_1.txt | 98.43% |
+| orig_0.8_dis_10.txt | 94.06% |
+| orig_0.8_dis_15.txt | 82.91% |
+
+`dis` 后的数字表示字符被打乱的程度，数字越大重复率越低，与预期一致。
 
 测试与质量分析需先激活项目虚拟环境 `.venv`（其中已安装 pytest、pytest-cov、pylint）：
 

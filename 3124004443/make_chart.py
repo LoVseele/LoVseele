@@ -1,4 +1,4 @@
-"""根据 profile_stats.prof 生成「各函数累计耗时 Top-N」横向柱状图（SVG）。"""
+"""根据 profile_stats.prof 生成「各函数自身耗时 Top-N」横向柱状图（SVG）。"""
 
 import os
 import pstats
@@ -10,14 +10,24 @@ ROW_H = 34
 PAD = 20
 
 
+def tidy(name):
+    """压缩内置函数的冗长前缀，便于在图中阅读。"""
+    prefix = "<built-in method "
+    if name.startswith(prefix) and name.endswith(">"):
+        return name[len(prefix):-1]
+    return name
+
+
 def build_rows(stats):
-    """从剖析结果中取出 (标签, 累计耗时, 调用次数)，按累计耗时降序取前 N 条。"""
+    """取出 (标签, 自身耗时, 调用次数)，按自身耗时降序排列（0 耗时项不入榜）。"""
     rows = []
     for func, data in stats.stats.items():
-        (_, ncalls, _, cumulative, _) = data
+        (_, ncalls, tottime, _, _) = data
+        if tottime <= 0:
+            continue
         source = func[0].replace("\\", "/")
         filename = "built-in" if source == "~" else os.path.basename(source)
-        rows.append((f"{func[2]}  [{filename}]", cumulative, ncalls))
+        rows.append((f"{tidy(func[2])}  [{filename}]", tottime, ncalls))
     rows.sort(key=lambda item: item[1], reverse=True)
     return rows[:TOP_N]
 
@@ -31,20 +41,20 @@ def render_svg(rows):
         f'height="{height}" font-family="Segoe UI, Arial, sans-serif">',
         '<rect width="100%" height="100%" fill="#ffffff"/>',
         f'<text x="{PAD}" y="24" font-size="16" font-weight="700" '
-        f'fill="#1f2d3d">性能分析：各函数累计耗时（秒）</text>',
+        f'fill="#1f2d3d">性能分析：各函数自身耗时 tottime（秒）</text>',
     ]
     y = PAD + 40
     for index, (label, value, ncalls) in enumerate(rows):
-        bar_width = int((value / max_value) * (WIDTH - 360))
+        bar_width = max(2, int((value / max_value) * (WIDTH - 360)))
         color = "#e8543f" if index == 0 else "#2f6fed"
         # 函数名可能含 < > & 等 XML 保留字符，写入 SVG 前必须转义
-        text = escape(f"{index + 1}. {label[:52]}")
+        text = escape(f"{index + 1}. {label[:56]}")
         parts.append(f'<text x="{PAD}" y="{y + 16}" font-size="12" '
                      f'fill="#1f2d3d">{text}</text>')
         parts.append(f'<rect x="{PAD}" y="{y + 20}" width="{bar_width}" '
                      f'height="10" rx="3" fill="{color}"/>')
         parts.append(f'<text x="{PAD + bar_width + 6}" y="{y + 30}" '
-                     f'font-size="11" fill="#555">{value:.3f}s · {ncalls} calls</text>')
+                     f'font-size="11" fill="#555">{value * 1000:.1f}ms · {ncalls} calls</text>')
         y += ROW_H
     parts.append('</svg>')
     return "\n".join(parts)

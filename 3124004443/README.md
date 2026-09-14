@@ -17,7 +17,7 @@
 ├── profile_run.py     # 性能剖析与微基准脚本（开发用）
 ├── make_chart.py      # 由剖析数据生成性能图 SVG（开发用）
 ├── profile_chart.svg  # 性能分析图
-├── sample/            # 样例：orig.txt（原文）/ orig_add.txt（抄袭版）/ ans.txt（答案）
+├── sample/            # 测试集：orig.txt（原文）+ 5 个 0.8 相似度改写版 + 对应答案文件
 └── BLOG.md            # 作业博客
 ```
 
@@ -26,9 +26,19 @@
 核心程序 `main.py` 仅依赖 Python 标准库，无需安装任何第三方包，直接运行即可：
 
 ```bash
-# 计算重复率
-python main.py "sample/orig.txt" "sample/orig_add.txt" "sample/ans.txt"
+# 用法：python main.py <原文> <抄袭版> <答案文件>
+python main.py "sample/orig.txt" "sample/orig_0.8_dis_15.txt" "sample/ans.txt"
 ```
+
+在 `sample/` 测试集上的结果：
+
+| 抄袭版 | 重复率 |
+| --- | --- |
+| orig_0.8_add.txt | 94.17% |
+| orig_0.8_del.txt | 94.12% |
+| orig_0.8_dis_1.txt | 98.43% |
+| orig_0.8_dis_10.txt | 94.06% |
+| orig_0.8_dis_15.txt | 82.91% |
 
 单元测试、覆盖率与代码质量分析依赖 pytest / pytest-cov / pylint，需先激活项目虚拟环境（工具已装于 `.venv`）：
 
@@ -61,5 +71,5 @@ python profile_run.py && python make_chart.py
 - ✅ 仅使用标准库，全程不联网
 - ✅ 只读取给定的两个输入文件、只写入给定的答案文件
 - ✅ 任何异常都被兜底处理并写出 `0.00`，不会异常退出
-- ✅ 单次计算约 15 ms（20 000 字符文本），内存远低于 2048 MB
+- ✅ 单次「读取 + 查重」约 6.9 ms（约 1.05 万字符的真实测试文本），内存远低于 2048 MB
 - ✅ pylint 10.00/10 无警告；29 个单元测试全部通过，语句与分支覆盖率 100%
