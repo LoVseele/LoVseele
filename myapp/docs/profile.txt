@@ -1,0 +1,53 @@
+cProfile 性能剖析: 生成 10000 道题目 (r=100)
+========================================================================
+
+【优化前 v2_correct】函数调用总数 3675619
+         3675619 function calls (3455382 primitive calls) in 1.051 seconds
+
+   Ordered by: internal time
+   List reduced from 64 to 15 due to restriction <15>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   173205    0.074    0.000    0.114    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\random.py:245(_randbelow_with_getrandbits)
+107633/22187    0.072    0.000    0.554    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\tests\benchmark.py:102(build_tree)
+    89808    0.067    0.000    0.104    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\fractions.py:203(__new__)
+   109682    0.062    0.000    0.156    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\random.py:295(randrange)
+103901/22187    0.059    0.000    0.221    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:80(validate_tree)
+   305886    0.048    0.000    0.081    0.000 {built-in method builtins.isinstance}
+    66354    0.040    0.000    0.097    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\fractions.py:986(_richcmp)
+    11049    0.035    0.000    0.852    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:377(generate_expression)
+    63523    0.031    0.000    0.084    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\random.py:345(choice)
+        1    0.027    0.027    1.051    1.051 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:445(generate)
+   109682    0.026    0.000    0.183    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\random.py:336(randint)
+    44110    0.025    0.000    0.138    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\tests\benchmark.py:82(random_natural)
+    11049    0.024    0.000    0.031    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\random.py:458(choices)
+    66959    0.024    0.000    0.103    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\expression.py:114(__init__)
+    20800    0.024    0.000    0.159    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\tests\benchmark.py:86(random_proper_fraction)
+
+
+
+
+【优化后 v3_optimized】函数调用总数 2078572
+         2078572 function calls (1853480 primitive calls) in 0.578 seconds
+
+   Ordered by: internal time
+   List reduced from 55 to 15 due to restriction <15>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+111451/22877    0.075    0.000    0.179    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:364(build_tree)
+107763/22877    0.057    0.000    0.218    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:80(validate_tree)
+   279222    0.035    0.000    0.057    0.000 {built-in method builtins.isinstance}
+    58162    0.035    0.000    0.085    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\fractions.py:986(_richcmp)
+    10604    0.031    0.000    0.467    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:377(generate_expression)
+        1    0.024    0.024    0.578    0.578 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:445(generate)
+    67164    0.024    0.000    0.034    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:296(_pick)
+47232/10726    0.020    0.000    0.027    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:122(has_identity_operand)
+    67164    0.020    0.000    0.088    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\generator.py:353(random_operand)
+    48201    0.020    0.000    0.026    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\fractions.py:334(_from_coprime_ints)
+    45998    0.017    0.000    0.082    0.000 C:\Users\MR\.workbuddy\binaries\python\versions\3.13.12\Lib\fractions.py:666(forward)
+   213621    0.017    0.000    0.017    0.000 {method 'random' of '_random.Random' objects}
+17554/10000    0.013    0.000    0.046    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\expression.py:159(evaluate)
+18176/10604    0.012    0.000    0.025    0.000 C:\Users\MR\Desktop\MathExerciseGenerator\src\expression.py:177(canonical)
+    62568    0.011    0.000    0.022    0.000 <frozen abc>:117(__instancecheck__)
+
+

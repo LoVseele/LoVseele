@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小学四则运算题目生成器</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-header__main">
+    <div class="app-logo" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="40" height="40">
+        <rect x="3" y="3" width="42" height="42" rx="12" fill="#4f46e5"/>
+        <path d="M15 17h18M15 24h7M15 31h7M31 24v14M26 31h10"
+              stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h1>小学四则运算题目生成器</h1>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab is-active" data-tab="generate" role="tab">出题</button>
+  <button class="tab" data-tab="grade" role="tab">批改</button>
+</nav>
+
+<main class="app-main">
+
+  <section class="panel is-active" id="panel-generate">
+    <div class="card">
+      <div class="card__head"><h2>生成参数</h2></div>
+      <div class="card__body">
+        <div class="form-grid">
+          <div class="field">
+            <label for="input-count">题目数量</label>
+            <input id="input-count" type="number" min="1" max="200000" step="1" value="10">
+            <div class="presets" data-target="input-count">
+              <button data-value="10">10</button>
+              <button data-value="100">100</button>
+              <button data-value="1000">1000</button>
+              <button data-value="10000">10000</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="input-range">数值范围（r 以内，不含 r）</label>
+            <input id="input-range" type="number" min="1" max="100000" step="1" value="10">
+            <div class="presets" data-target="input-range">
+              <button data-value="10">10</button>
+              <button data-value="20">20</button>
+              <button data-value="100">100</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="input-ops">运算符个数上限</label>
+            <select id="input-ops">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary-btn" id="button-generate" type="button">
+            <span class="spinner" hidden></span>
+            <span class="label">生成题目</span>
+          </button>
+          <button class="ghost-btn" id="button-download-exercise" type="button" disabled>下载 Exercises.txt</button>
+          <button class="ghost-btn" id="button-download-answer" type="button" disabled>下载 Answers.txt</button>
+        </div>
+        <div class="alert alert--error" id="generate-error" hidden></div>
+        <div class="alert alert--warn" id="generate-warn" hidden></div>
+      </div>
+    </div>
+
+    <div id="result-area" hidden>
+      <div class="stat-grid" id="stat-grid"></div>
+
+      <div class="chart-grid">
+        <div class="card">
+          <div class="card__head"><h3>运算符分布</h3></div>
+          <div class="card__body" id="chart-operators"></div>
+        </div>
+        <div class="card">
+          <div class="card__head"><h3>答案类型分布</h3></div>
+          <div class="card__body chart-donut-wrap" id="chart-answer-types"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h2>题目列表</h2>
+          <span class="hint" id="table-hint"></span>
+        </div>
+        <div class="card__body">
+          <div class="table-wrap">
+            <table class="problem-table">
+              <thead>
+                <tr>
+                  <th class="col-index">#</th>
+                  <th>题目</th>
+                  <th class="col-answer-input">我的作答</th>
+                  <th class="col-answer" data-role="answer-column" hidden>答案</th>
+                  <th class="col-verdict">判定</th>
+                </tr>
+              </thead>
+              <tbody id="problem-tbody"></tbody>
+            </table>
+          </div>
+          <p class="table-note" id="table-note" hidden></p>
+          <div class="actions">
+            <button class="ghost-btn" id="button-toggle-answers" type="button" disabled>显示答案</button>
+            <button class="ghost-btn" id="button-self-grade" type="button" disabled>批改作答</button>
+          </div>
+          <div class="alert alert--info" id="self-grade-summary" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" id="empty-state">
+      <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+        <rect x="6" y="6" width="52" height="52" rx="14" fill="none" stroke="#c7cbe0" stroke-width="3"/>
+        <path d="M20 24h24M20 32h10M20 40h10M40 32v14M34 39h12"
+              stroke="#c7cbe0" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+      </svg>
+      <p>设置参数后点击「生成题目」</p>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-grade">
+    <div class="card">
+      <div class="card__head"><h2>批改</h2></div>
+      <div class="card__body">
+        <div class="split-editors">
+          <div class="field">
+            <label for="textarea-exercise">题目</label>
+            <textarea id="textarea-exercise" spellcheck="false" placeholder="每行一道题目，例如&#10;1/6 + 1/8 = &#10;7 - 2 × 3 = "></textarea>
+          </div>
+          <div class="field">
+            <label for="textarea-answer">答案</label>
+            <textarea id="textarea-answer" spellcheck="false" placeholder="每行一个答案，例如&#10;7/24&#10;1"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary-btn" id="button-grade" type="button">
+            <span class="spinner" hidden></span>
+            <span class="label">开始批改</span>
+          </button>
+          <button class="ghost-btn" id="button-fill-generated" type="button">填入刚生成的题目与答案</button>
+          <button class="ghost-btn" id="button-clear-editors" type="button">清空</button>
+          <button class="ghost-btn" id="button-download-grade" type="button" disabled>下载 Grade.txt</button>
+        </div>
+        <div class="alert alert--error" id="grade-error" hidden></div>
+      </div>
+    </div>
+
+    <div id="grade-result" hidden>
+      <div class="grade-summary">
+        <div class="grade-card grade-card--correct">
+          <span class="grade-card__label">Correct</span>
+          <strong id="grade-correct-count">0</strong>
+          <span class="grade-card__ids" id="grade-correct-ids"></span>
+        </div>
+        <div class="grade-card grade-card--wrong">
+          <span class="grade-card__label">Wrong</span>
+          <strong id="grade-wrong-count">0</strong>
+          <span class="grade-card__ids" id="grade-wrong-ids"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head"><h3>Grade.txt</h3></div>
+        <div class="card__body"><pre class="code-block" id="grade-text"></pre></div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3>错题明细</h3>
+          <span class="hint" id="grade-detail-hint"></span>
+        </div>
+        <div class="card__body">
+          <div class="table-wrap">
+            <table class="problem-table">
+              <thead>
+                <tr><th class="col-index">#</th><th>题目</th><th>提交答案</th><th>正确答案</th><th>说明</th></tr>
+              </thead>
+              <tbody id="grade-detail-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <span id="health-indicator" class="health health--unknown"></span>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
