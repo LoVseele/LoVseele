@@ -108,7 +108,7 @@ myapp/
 │   └── fileio.py       文件读写
 ├── web/                前端界面（index.html / style.css / app.js）
 ├── tests/
-│   ├── test_all.py     40 个单元测试（覆盖需求 2~9 与难度约束）
+│   ├── test_all.py     41 个单元测试（覆盖需求 2~9、难度约束与批改边界）
 │   ├── benchmark.py    三代实现的性能基准与 cProfile 剖析
 │   └── demo_cases.py   运行博文「测试运行」一节的用例
 ├── docs/               结对博客、性能分析图、设计图、界面截图
@@ -118,7 +118,7 @@ myapp/
 ## 5. 运行测试
 
 ```bash
-python tests/test_all.py          # 40 个用例，约 1.3 秒
+python tests/test_all.py          # 41 个用例，约 1.7 秒
 python tests/benchmark.py --profile   # 性能对比 + cProfile 剖析，结果写入 docs/
 ```
 

@@ -11,6 +11,7 @@ from .fileio import (
     GRADE_FILENAME,
     read_lines,
     write_grade_file,
+    write_lines,
     write_problem_files,
 )
 from .generator import (
@@ -47,6 +48,7 @@ __all__ = [
     "parse_value",
     "read_lines",
     "validate_tree",
+    "write_lines",
     "write_grade_file",
     "write_problem_files",
 ]

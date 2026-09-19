@@ -27,6 +27,7 @@ from src import (  # noqa: E402
     parse_expression,
     parse_value,
     read_lines,
+    write_lines,
     write_problem_files,
 )
 from src.expression import Expr  # noqa: E402
@@ -429,6 +430,28 @@ class TestCommandLine(unittest.TestCase):
         self.assertIn("必须指定 -r", completed.stderr)
         self.assertIn("usage:", completed.stderr)
         self.assertIn("示例:", completed.stderr)
+
+    def test_blank_answer_line_does_not_shift_others(self):
+        """答案文件中间的空行代表该题未作答, 不能让它后面的答案整体错位。
+
+        这是实测中发现的一个 bug: 读取答案文件时把空行跳过了, 于是第 3 题
+        的答案被当成第 2 题的答案判分。修复后空行必须保留下来。
+        """
+        exercises = ["1/4 + 1/4", "1/2 + 1/2", "3/4 + 3/4"]
+        answers = ["1/2", "", "1'1/2"]
+        with tempfile.TemporaryDirectory() as directory:
+            write_lines(os.path.join(directory, "Exercises.txt"), exercises)
+            write_lines(os.path.join(directory, "Answers.txt"), answers)
+            completed = self._run(
+                "-e", os.path.join(directory, "Exercises.txt"),
+                "-a", os.path.join(directory, "Answers.txt"),
+                "-o", directory,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            grade_lines = read_lines(os.path.join(directory, "Grade.txt"))
+
+        self.assertEqual(grade_lines[0], "Correct: 2 (1, 3)")
+        self.assertEqual(grade_lines[1], "Wrong: 1 (2)")
 
     def test_generate_and_grade_round_trip(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -128,10 +128,14 @@ def run_grade(args: argparse.Namespace) -> int:
 
     try:
         exercise_lines = read_lines(args.e)
-        answer_lines = read_lines(args.a)
+        # 答案文件的空行代表"该题未作答", 必须保留, 否则后面的答案会错位
+        answer_lines = read_lines(args.a, keep_empty=True)
     except FileNotFoundError as error:
         print(f"文件错误: {error}", file=sys.stderr)
         return 2
+
+    while answer_lines and answer_lines[-1].strip() == "":
+        answer_lines.pop()               # 文件末尾的换行不算一行答案
 
     if not exercise_lines:
         print(f"文件错误: 题目文件为空 ({args.e})", file=sys.stderr)

@@ -12,12 +12,20 @@ ANSWER_FILENAME = "Answers.txt"
 GRADE_FILENAME = "Grade.txt"
 
 
-def read_lines(path: str) -> List[str]:
-    """读取文本文件的所有非空行 (自动去除行尾换行符)。"""
+def read_lines(path: str, keep_empty: bool = False) -> List[str]:
+    """读取文本文件的所有行 (去掉行尾换行符)。
+
+    ``keep_empty`` 为 ``False`` 时跳过空行, 适用于题目文件; 读取**答案文件**
+    必须传 ``True`` —— 空行代表"该题未作答", 若被跳过, 它后面的答案就会
+    整体前移一行, 与题目错位。
+    """
     if not os.path.exists(path):
         raise FileNotFoundError(f"文件不存在: {path}")
     with open(path, "r", encoding="utf-8") as handle:
-        return [line.rstrip("\n") for line in handle if line.strip() != ""]
+        lines = [line.rstrip("\n") for line in handle]
+    if keep_empty:
+        return lines
+    return [line for line in lines if line.strip() != ""]
 
 
 def write_lines(path: str, lines: Iterable[str]) -> str:
